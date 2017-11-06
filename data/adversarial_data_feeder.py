@@ -16,7 +16,7 @@ class AdversarialInfo:
         with open(os.path.join(path, 'descriptor.json'), 'r') as f:
             info_dict = json.load(f)
 
-        self.root_path = info_dict['root_path']
+        self.root_path = path
         self.source = info_dict['source']
         self.target = info_dict['target']
         self.attack_params = info_dict['attack_params']
@@ -43,8 +43,8 @@ class AdversarialData(AdversarialInfo):
             base_img = Image.open(os.path.join(self.root_path, base_fname))
 
             # TODO: the image size should somehow be specified programatically.
-            adv_imgs.append(np.array(adv_img).reshape((28, 28, 3)) / 255.0)
-            base_imgs.append(np.array(base_img).reshape((28, 28, 3)) / 255.0)
+            adv_imgs.append(np.array(adv_img).reshape((28, 28, 1)) / 255.0)
+            base_imgs.append(np.array(base_img).reshape((28, 28, 1)) / 255.0)
 
         def make_ohe(i, n):
             return np.eye(n, dtype=np.float32)[i]
@@ -53,7 +53,24 @@ class AdversarialData(AdversarialInfo):
         self.target_labels = np.repeat(np.array([make_ohe(self.target, 10)]), repeats=len(img_indices), axis=0)
         self.base_data = np.array(base_imgs)
         self.source_labels = np.repeat(np.array([make_ohe(self.source, 10)]), repeats=len(img_indices), axis=0)
+        self.perturbations = None
 
+    def get_perturbation_mean(self):
+        if self.perturbations is None:
+            self._gather_perturbations()
+
+        return np.mean(self.perturbations)
+
+    def get_perturbation_std_dev(self):
+        if self.perturbations is None:
+            self._gather_perturbations()
+
+        return np.std(self.perturbations)
+
+    def _gather_perturbations(self):
+        self.perturbations = []
+        for base_img, adv_img in zip(self.base_data, self.adv_data):
+            self.perturbations.append(np.sum(np.abs(base_img - adv_img)) / (np.multiply(*base_img.shape)))
 
 class BoxedAdversarialData(AdversarialData):
     def __init__(self, path, frames):
@@ -74,7 +91,7 @@ class BlackBoxedAdversarialData(AdversarialData):
         super().__init__(path)
 
         # TODO: the image size should somehow be specified programatically.
-        clean_datum = np.full(shape=(28,28,3), fill_value=0.0)
+        clean_datum = np.full(shape=(28,28,1), fill_value=0.0)
         boxed_data = []
         for adv_datum in self.adv_data:
             adv_datum[:frames, :, :] = clean_datum[:frames, :, :]

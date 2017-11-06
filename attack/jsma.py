@@ -11,8 +11,8 @@ def generate(sess, model, data_feeder, source, target, adv_dump_dir, nb_samples,
     wrap = KerasModelWrapper(model.model)
     jsma = SaliencyMapMethod(wrap, sess=sess)
     jsma_params = {
-        'gamma': perturbation_step,
-        'theta': max_perturbation,
+        'gamma': max_perturbation,
+        'theta': perturbation_step,
         'clip_min': 0.0,
         'clip_max': 1.0,
         'y_target': data_feeder.get_labels(target, nb_samples)
