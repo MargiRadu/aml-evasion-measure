@@ -13,18 +13,16 @@ if __name__ == '__main__':
 
     model = MNISTModel(architecture='default', restore=model_path)
     result_writer = ResultWriter(result_path, adv_path, model_path)
-    for dir_name in os.listdir(adv_path)[:1]:
+    for dir_name in os.listdir(adv_path):
         adv_feeder = AdversarialData(os.path.join(adv_path, dir_name))
+        acc = model.test(adv_feeder.adv_data, adv_feeder.target_labels)['acc']
 
-        metrics = model.test(adv_feeder.adv_data, adv_feeder.target_labels)
-        print(adv_feeder.target_labels[0])
-        print(metrics)
-        #
-        # result_writer.put(
-        #     attack_path=dir_name,
-        #     source=adv_feeder.source,
-        #     target=adv_feeder.target,
-        #     success_ratio=,
-        #     perturbation_mean=adv_feeder.get_perturbation_mean(),
-        #     perturbation_std_dev=adv_feeder.get_perturbation_std_dev()
-        # )
+        result_writer.put(
+            attack_path=dir_name,
+            source=adv_feeder.source,
+            target=adv_feeder.target,
+            success_ratio=acc,
+            perturbation_mean=adv_feeder.get_perturbation_mean(),
+            perturbation_std_dev=adv_feeder.get_perturbation_std_dev()
+        )
+    result_writer.commit()

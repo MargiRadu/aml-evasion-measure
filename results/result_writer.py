@@ -3,9 +3,9 @@ import os
 
 
 class ResultWriter:
-    def __init__(self, result_path, attack_path, victim_model_path):
+    def __init__(self, result_path, attack_path, victim_model_path, result_descriptor):
         self.results = []
-        self.result_path = os.path.join(result_path, 'results.json')
+        self.result_path = os.path.join(result_path, 'results_{}.json'.format(result_descriptor))
         self.attack_path = attack_path
         self.victim_path = victim_model_path
 

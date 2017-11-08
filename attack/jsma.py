@@ -1,7 +1,3 @@
-import numpy as np
-from keras import backend as K
-import tensorflow as tf
-
 from cleverhans.attacks import SaliencyMapMethod
 from cleverhans.utils_keras import KerasModelWrapper
 from data.adversarial_data_writer import AdversarialWriterEvasion

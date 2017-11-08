@@ -16,7 +16,7 @@ class AdversarialInfo:
         with open(os.path.join(path, 'descriptor.json'), 'r') as f:
             info_dict = json.load(f)
 
-        self.root_path = path
+        self.root_path = info_dict['root_path']
         self.source = info_dict['source']
         self.target = info_dict['target']
         self.attack_params = info_dict['attack_params']
@@ -70,7 +70,7 @@ class AdversarialData(AdversarialInfo):
     def _gather_perturbations(self):
         self.perturbations = []
         for base_img, adv_img in zip(self.base_data, self.adv_data):
-            self.perturbations.append(np.sum(np.abs(base_img - adv_img)) / (np.multiply(*base_img.shape)))
+            self.perturbations.append(np.sum(np.abs(base_img - adv_img)) / (np.prod(base_img.shape)))
 
 class BoxedAdversarialData(AdversarialData):
     def __init__(self, path, frames):

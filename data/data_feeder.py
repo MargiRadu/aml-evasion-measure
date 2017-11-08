@@ -137,7 +137,7 @@ class MNISTFeederEvasion(AbstractFeeder):
         self.test_data = test_data[:self.splitter]
 
         self.craft_data = test_data[self.splitter:, :, :, :]
-        self.craft_labels = test_data[self.splitter:]
+        self.craft_labels = test_labels[self.splitter:]
 
         self.test_count = 0
 
@@ -148,7 +148,7 @@ class MNISTFeederEvasion(AbstractFeeder):
         return possible_images[indices]
 
 
-class MNISTFeeder(AbstractFeeder):
+class MNISTFeederPoison(AbstractFeeder):
     def __init__(self, path_to_mnist):
         super().__init__()
 
