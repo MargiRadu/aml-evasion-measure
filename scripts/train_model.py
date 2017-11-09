@@ -4,7 +4,7 @@ from models.models import MNISTModel
 from utils.paths import path_to_mnist, path_to_models
 
 if __name__ == '__main__':
-    model_path = os.path.join(path_to_models, 'vanilla_mnist_cw')
+    model_path = os.path.join(path_to_models, 'vanilla_mnist')
     model = MNISTModel('default', restore=False)
     data = MNISTFeederEvasion(path_to_mnist)
 

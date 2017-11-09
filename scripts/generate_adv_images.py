@@ -1,5 +1,7 @@
 from attack.jsma import generate as jsma
 from attack.carlini_wagner import generate as cwl2
+from attack.fgsm import generate as fgsm
+
 from data.data_feeder import MNISTFeederEvasion
 from models.models import MNISTModel
 from utils.paths import path_to_mnist, path_to_models, path_to_adv_data
@@ -44,6 +46,23 @@ def cwl2_generate():
                      nb_samples=32)
 
 
+def fgsm_generate():
+    with tf.Session() as sess:
+        K.set_session(sess)
+        data = MNISTFeederEvasion(path_to_mnist)
+        model = MNISTModel(architecture='default', restore=os.path.join(path_to_models, 'vanilla_mnist'))
+        for i in range(10):
+            for j in range(10):
+                print(f"Generating S:{i} T:{j}...")
+                fgsm(sess=sess,
+                     model=model,
+                     data_feeder=data,
+                     source=i,
+                     target=j,
+                     adv_dump_dir=os.path.join(path_to_adv_data, 'fgsm', f'src{i}_tg{j}'),
+                     nb_samples=32)
+
+
 if __name__ == '__main__':
-    cwl2_generate()
+    fgsm_generate()
 
