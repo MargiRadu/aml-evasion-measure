@@ -2,11 +2,10 @@ import os
 import numpy as np
 
 from keras.models import Sequential
-from keras.layers import Dense, Dropout, Flatten
+from keras.layers import Dense, Flatten, Activation
 from keras.layers import Conv2D, MaxPooling2D
 from keras.optimizers import Adam
 from keras.models import load_model
-
 
 class AbstractModel:
     def __init__(self):
@@ -90,7 +89,6 @@ class MNISTModel(AbstractModel):
         # Conv 2 + MaxPool + DO
         model.add(Conv2D(32, kernel_size=(3, 3), activation='relu'))
         model.add(MaxPooling2D(pool_size=(2, 2)))
-        model.add(Dropout(0.25))
 
         # Conv 3 + MaxPool
         if architecture != 'shallow':
@@ -100,10 +98,10 @@ class MNISTModel(AbstractModel):
         # Flatten + Dense + DO
         model.add(Flatten())
         model.add(Dense(dense_nodes, activation='relu'))
-        model.add(Dropout(0.5))
 
         # Output
-        model.add(Dense(10, activation='softmax'))
+        model.add(Dense(10))
+        model.add(Activation('softmax'))
 
         self.model = model
         if restore:

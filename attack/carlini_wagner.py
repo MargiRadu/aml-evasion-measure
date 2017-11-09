@@ -3,14 +3,14 @@ from cleverhans.utils_keras import KerasModelWrapper
 from data.adversarial_data_writer import AdversarialWriterEvasion
 
 
-def generate(sess, model, data_feeder, source, target, adv_dump_dir, nb_samples, learning_rate=2e-3, confidence=0):
+def generate(sess, model, data_feeder, source, target, adv_dump_dir, nb_samples, learning_rate=0.1, confidence=0):
     wrap = KerasModelWrapper(model.model)
     cwl2 = CarliniWagnerL2(wrap, sess=sess)
 
     batch_size = 32
-    max_iterations = 1000
+    max_iterations = 450
     abort_early = True
-    bin_search_steps = 7
+    bin_search_steps = 1
     cwl2_params = {
         'confidence': confidence,
         'learning_rate': learning_rate,
@@ -18,6 +18,7 @@ def generate(sess, model, data_feeder, source, target, adv_dump_dir, nb_samples,
         'batch_size': batch_size,
         'max_iterations': max_iterations,
         'abort_early': abort_early,
+        'initial_const': 10,
         'clip_min': 0.0,
         'clip_max': 1.0,
         'y_target': data_feeder.get_labels(target, nb_samples)

@@ -131,10 +131,10 @@ class MNISTFeederEvasion(AbstractFeeder):
         test_labels = extract_labels(os.path.join(path_to_mnist, 't10k-labels-idx1-ubyte.gz'), 10000)
 
         # Setup training data split.
-        self.splitter = 4000
+        self.splitter = 6000
 
         self.test_data = test_data[:self.splitter, :, :, :]
-        self.test_data = test_data[:self.splitter]
+        self.test_labels = test_labels[:self.splitter]
 
         self.craft_data = test_data[self.splitter:, :, :, :]
         self.craft_labels = test_labels[self.splitter:]
